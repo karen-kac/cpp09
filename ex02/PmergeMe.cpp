@@ -9,6 +9,14 @@
 #include <deque>
 #include <cmath>
 
+// For C++98 compatibility, define SIZE_MAX if not available
+#ifndef SIZE_MAX
+#define SIZE_MAX ((size_t)-1)
+#endif
+
+// Custom constant for marking used pairs
+static const size_t USED_PAIR_MARKER = ((size_t)-1);
+
 // 本ファイルの目的:
 //  - 引数から正の整数列を読み取り、vector / deque の両方で
 //    Ford–Johnson（merge-insertion）法に基づくソートを実行する。
@@ -202,9 +210,9 @@ static void ford_johnson_larger_vector(std::vector<LargerWithIndex>& larger_list
 	for (size_t i = 0; i < sub_larger.size(); ++i) {
 		size_t want_idx = sub_larger[i].original_index;
 		for (size_t j = 0; j < pairs.size(); ++j) {
-			if (pairs[j].original_index != SIZE_MAX && larger_list[pairs[j].larger].original_index == want_idx) {
+			if (pairs[j].original_index != USED_PAIR_MARKER && larger_list[pairs[j].larger].original_index == want_idx) {
 				sorted_pairs.push_back(pairs[j]);
-				pairs[j].original_index = SIZE_MAX; // 使用済みマーク
+				pairs[j].original_index = USED_PAIR_MARKER; // 使用済みマーク
 				break;
 			}
 		}
@@ -316,7 +324,7 @@ static void ford_johnson_vector_impl(std::vector<int>& v, size_t& comp_count) {
 		for (size_t j = 0; j < pairs.size(); ++j) {
 			if (pairs[j].original_index == want_idx) {
 				sorted_pairs.push_back(pairs[j]);
-				pairs[j].original_index = SIZE_MAX; // 使用済みマーク
+				pairs[j].original_index = USED_PAIR_MARKER; // 使用済みマーク
 				break;
 			}
 		}
